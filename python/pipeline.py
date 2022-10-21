@@ -15,9 +15,8 @@ class Pipeline:
     def run(self, project):
         try:
             self.run_tests(project)
-            deploy_successful = self.deploy_project(project)
-            summary = self.define_email_summary(deploy_successful)
-            self.send_email_summary(summary)
+            self.deploy_project(project)
+            self.send_email_summary("Deployment completed successfully")
         except ExceptionTestsFailed:
             self.send_email_summary("Tests failed")
         except ExceptionDeploymentFailed:
@@ -30,20 +29,12 @@ class Pipeline:
         else:
             self.log.info("Email disabled")
 
-    def define_email_summary(self, deploy_successful):
-        if deploy_successful:
-            summary = "Deployment completed successfully"
-        else:
-            summary = "Deployment failed"
-        return summary
-
     def deploy_project(self, project):
         if "success" != project.deploy():
             self.log.error("Deployment failed")
             raise ExceptionDeploymentFailed
 
         self.log.info("Deployment successful")
-        return True
 
     def run_tests(self, project):
         if not project.has_tests():
@@ -55,4 +46,3 @@ class Pipeline:
             raise ExceptionTestsFailed
 
         self.log.info("Tests passed")
-
