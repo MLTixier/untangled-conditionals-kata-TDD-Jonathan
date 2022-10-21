@@ -11,8 +11,7 @@ class Pipeline:
         else:
             tests_passed = self.run_tests(project)
         deploy_successful = self.deploy_project(project) if tests_passed else False
-        email_summary = self.create_email_summary(deploy_successful, tests_passed)
-        self.send_email_summary(email_summary)
+
 
     def send_email_summary(self, email_summary):
         if self.config.send_email_summary():
@@ -21,21 +20,14 @@ class Pipeline:
         else:
             self.log.info("Email disabled")
 
-    def create_email_summary(self, deploy_successful, tests_passed):
-        if tests_passed:
-            if deploy_successful:
-                email_summary = "Deployment completed successfully"
-            else:
-                email_summary = "Deployment failed"
-        else:
-            email_summary = "Tests failed"
-        return email_summary
 
     def deploy_project(self, project):
         if project.is_deploy_success():
             self.log.info("Deployment successful")
+            self.send_email_summary("Deployment completed successfully")
         else:
             self.log.error("Deployment failed")
+            self.send_email_summary("Deployment failed")
         return project.is_deploy_success()
 
     def run_tests(self, project):
@@ -43,4 +35,5 @@ class Pipeline:
             self.log.info("Tests passed")
         else:
             self.log.error("Tests failed")
+            self.send_email_summary("Tests failed")
         return project.is_run_tests_success()
