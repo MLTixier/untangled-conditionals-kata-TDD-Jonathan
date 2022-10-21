@@ -6,10 +6,6 @@ class ExceptionDeploymentFailed(Exception):
     pass
 
 
-# class ExceptionNoTests(Exception):
-#     pass
-
-
 class Pipeline:
     def __init__(self, config, emailer, log):
         self.config = config

@@ -17,7 +17,7 @@ class Project:
         return True if self.test_status == PASSING_TESTS else False
 
     def is_deploy_success(self):
-        return True if self.builds_successfully else False
+        return self.builds_successfully
 
 
 class ProjectBuilder:
