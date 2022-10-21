@@ -14,7 +14,6 @@ class Pipeline:
                 tests_passed = True
             else:
                 self.log.error("Tests failed")
-                tests_passed = False
         else:
             self.log.info("No tests")
             tests_passed = True
@@ -25,9 +24,6 @@ class Pipeline:
                 deploy_successful = True
             else:
                 self.log.error("Deployment failed")
-                deploy_successful = False
-        else:
-            deploy_successful = False
 
         if self.config.send_email_summary():
             self.log.info("Sending email")
