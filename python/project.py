@@ -13,11 +13,11 @@ class Project:
     def has_tests(self):
         return self.test_status != NO_TESTS
 
-    def run_tests(self):
-        return "success" if self.test_status == PASSING_TESTS else "failure"
+    def is_run_tests_success(self):
+        return True if self.test_status == PASSING_TESTS else False
 
-    def deploy(self):
-        return "success" if self.builds_successfully else "failure"
+    def is_deploy_success(self):
+        return True if self.builds_successfully else False
 
 
 class ProjectBuilder:
