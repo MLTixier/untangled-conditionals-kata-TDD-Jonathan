@@ -20,7 +20,6 @@ class Pipeline:
         try:
             self.run_tests(project)
             self.deploy_project(project)
-            self.log.info("Deployment successful")
             self.send_email_summary("Deployment completed successfully")
         except ExceptionTestsFailed:
             self.send_email_summary("Tests failed")
@@ -40,6 +39,8 @@ class Pipeline:
         if not project.is_deploy_success():
             self.log.error("Deployment failed")
             raise ExceptionDeploymentFailed()
+
+        self.log.info("Deployment successful")
 
     def run_tests(self, project):
         if not project.has_tests():
