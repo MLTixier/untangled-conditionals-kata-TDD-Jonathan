@@ -2,6 +2,10 @@ class ExceptionTestsFailed(Exception):
     pass
 
 
+class ExceptionDeploymentFailed(Exception):
+    pass
+
+
 class Pipeline:
     def __init__(self, config, emailer, log):
         self.config = config
@@ -16,6 +20,8 @@ class Pipeline:
             self.send_email_summary(summary)
         except ExceptionTestsFailed:
             self.send_email_summary("Tests failed")
+        except ExceptionDeploymentFailed:
+            self.send_email_summary("Deployment failed")
 
     def send_email_summary(self, summary):
         if self.config.send_email_summary():
@@ -34,7 +40,7 @@ class Pipeline:
     def deploy_project(self, project):
         if "success" != project.deploy():
             self.log.error("Deployment failed")
-            return False
+            raise ExceptionDeploymentFailed
 
         self.log.info("Deployment successful")
         return True
