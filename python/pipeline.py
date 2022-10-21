@@ -1,9 +1,13 @@
-class ExceptionTestsFailed (Exception):
+class ExceptionTestsFailed(Exception):
     pass
 
 
 class ExceptionDeploymentFailed(Exception):
     pass
+
+
+# class ExceptionNoTests(Exception):
+#     pass
 
 
 class Pipeline:
@@ -14,17 +18,16 @@ class Pipeline:
 
     def run(self, project):
         try:
-            if not project.has_tests():
-                self.log.info("No tests")
-                self.deploy_project(project)
-            else:
-                self.run_tests(project)
-                if project.is_run_tests_success():
-                    self.deploy_project(project)
+            self.run_tests(project)
+            self.deploy_project(project)
+            self.log.info("Deployment successful")
+            self.send_email_summary("Deployment completed successfully")
         except ExceptionTestsFailed:
             self.send_email_summary("Tests failed")
         except ExceptionDeploymentFailed:
             self.send_email_summary("Deployment failed")
+        # except ExceptionNoTests:
+        #     pass
 
     def send_email_summary(self, email_summary):
         if self.config.send_email_summary():
@@ -38,10 +41,12 @@ class Pipeline:
             self.log.error("Deployment failed")
             raise ExceptionDeploymentFailed()
 
-        self.log.info("Deployment successful")
-        self.send_email_summary("Deployment completed successfully")
-
     def run_tests(self, project):
+        if not project.has_tests():
+            self.log.info("No tests")
+            return
+            # raise ExceptionNoTests
+
         if not project.is_run_tests_success():
             self.log.error("Tests failed")
             raise ExceptionTestsFailed
