@@ -4,10 +4,7 @@ class Pipeline:
         self.emailer = emailer
         self.log = log
 
-    def run(self, project):
-        tests_passed = False
-        deploy_successful = False
-
+    def run_tests(self, project, tests_passed, deploy_successful):
         if project.has_tests():
             if "success" == project.run_tests():
                 self.log.info("Tests passed")
@@ -17,6 +14,13 @@ class Pipeline:
         else:
             self.log.info("No tests")
             tests_passed = True
+        return tests_passed, deploy_successful
+
+    def run(self, project):
+        tests_passed = False
+        deploy_successful = False
+
+        tests_passed, deploy_successful = self.run_tests(project, tests_passed, deploy_successful)
 
         if tests_passed:
             if "success" == project.deploy():
