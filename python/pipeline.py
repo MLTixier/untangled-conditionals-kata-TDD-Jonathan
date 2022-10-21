@@ -8,7 +8,7 @@ class Pipeline:
         tests_passed = False
         deploy_successful = False
 
-        tests_passed = self.run_tests(project, tests_passed)
+        tests_passed = self.run_tests(project)
         deploy_successful = self.deploy_project(deploy_successful, project, tests_passed)
         summary = self.define_email_summary(deploy_successful, tests_passed)
         self.send_email_summary(summary)
@@ -39,14 +39,14 @@ class Pipeline:
                 self.log.error("Deployment failed")
         return deploy_successful
 
-    def run_tests(self, project, tests_passed):
-        if project.has_tests():
-            if "success" == project.run_tests():
-                self.log.info("Tests passed")
-                tests_passed = True
-            else:
-                self.log.error("Tests failed")
-        else:
+    def run_tests(self, project):
+        if not project.has_tests():
             self.log.info("No tests")
-            tests_passed = True
-        return tests_passed
+            return True
+
+        if "success" != project.run_tests():
+            self.log.error("Tests failed")
+            return False
+
+        self.log.info("Tests passed")
+        return True
