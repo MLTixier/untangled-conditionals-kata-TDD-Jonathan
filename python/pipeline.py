@@ -34,4 +34,3 @@ class Pipeline:
         else:
             self.log.error("Tests failed")
             self.send_email_summary("Tests failed")
-
