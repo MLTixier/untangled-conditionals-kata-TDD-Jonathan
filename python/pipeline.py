@@ -25,8 +25,6 @@ class Pipeline:
             self.send_email_summary("Tests failed")
         except ExceptionDeploymentFailed:
             self.send_email_summary("Deployment failed")
-        # except ExceptionNoTests:
-        #     pass
 
     def send_email_summary(self, email_summary):
         if self.config.send_email_summary():
@@ -46,7 +44,6 @@ class Pipeline:
         if not project.has_tests():
             self.log.info("No tests")
             return
-            # raise ExceptionNoTests
 
         if not project.is_run_tests_success():
             self.log.error("Tests failed")
